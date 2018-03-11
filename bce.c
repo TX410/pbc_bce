@@ -390,11 +390,11 @@ void DecryptKEM_using_product(global_broadcast_params_t gbp,
   element_init(temp3, gbp->pairing->GT);
  
   //Generate the numerator
-  bilinear_map(temp, myct->C1, mykey->h_i, gbp->pairing);
+  pairing_apply(temp, myct->C1, mykey->h_i, gbp->pairing);
   //G1 element in denom
   element_mul(di_de, mykey->g_i_gamma, mykey->decr_prod);
   //Generate the denominator
-  bilinear_map(temp2, di_de, myct->C0, gbp->pairing);
+  pairing_apply(temp2, di_de, myct->C0, gbp->pairing);
   //Invert the denominator
   element_invert(temp3, temp2);
 
@@ -490,7 +490,7 @@ void BroadcastKEM_using_product(global_broadcast_params_t gbp,
   element_init(myct->C1, gbp->pairing->G1);
   
   //COMPUTE K
-  bilinear_map(key, gbp->gs[gbp->num_users-1], gbp->hs[0], gbp->pairing);
+  pairing_apply(key, gbp->gs[gbp->num_users-1], gbp->hs[0], gbp->pairing);
   element_pow_zn(key, key, t);
 
   //COMPUTE C0
@@ -967,5 +967,13 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
   element_clear(alpha);
 }
 
-
+void pairing_init_inp_str(pairing_t pairing, FILE *stream)
+{
+  char s_temp[2048];
+  size_t count = fread(s_temp, 1, 2048, stream);
+  if(!count)
+    pbc_die("input error");
+  if(pairing_init_set_buf(pairing, s_temp, count))
+    pbc_die("pairing init failed");
+}
 
