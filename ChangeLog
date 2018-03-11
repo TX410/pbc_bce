@@ -1,0 +1,31 @@
+commit 6b030d4d10afead8017ba9f0f9395c66bee87a29
+Author: Benjamin Lynn <blynn@google.com>
+Date:   Sun Sep 28 13:13:45 2008 -0700
+
+    Replace cg commands with git commands in makerelease.
+
+commit 4a1fc30545e47efc37824deb1ff4a05afb324562
+Author: Ben Lynn <blynn@cs.stanford.edu>
+Date:   Fri Nov 24 15:49:07 2006 -0800
+
+    pbc_bce-0.0.1
+
+commit 2b541e443b731f14c1dc44adc6d504851400855c
+Author: Ben Lynn <blynn@cs.stanford.edu>
+Date:   Fri Nov 24 15:48:56 2006 -0800
+
+    Fixed comments
+    
+    Use PBC memory allocation routines
+
+commit e0c4cef7c34890c0f7ca8097dc6c13b4e21a6bd6
+Author: Ben Lynn <blynn@cs.stanford.edu>
+Date:   Thu Nov 23 07:45:40 2006 -0800
+
+    pbc_bce-0.0.0
+
+commit ff29a43b0f9147a4925b32919cbe0bcdee32a345
+Author: Ben Lynn <blynn@cs.stanford.edu>
+Date:   Thu Nov 23 00:48:16 2006 -0800
+
+    Initial commit
