@@ -9,9 +9,7 @@
 #define N 64
 #define N_DIV_EIGHT  N/8
 
-
-int main(void)
-{
+int main(void) {
   int i;
 
   global_broadcast_params_t gbs;
@@ -70,7 +68,7 @@ int main(void)
     printf("\ng_i_gamma = ");
     element_out_str(stdout, 0, mykey3.g_i_gamma);
     printf("\n");
- }
+  }
 
   char recip[N_DIV_EIGHT];
   for(i = 0; i < 2; i++) recip[i] = 254;
@@ -303,9 +301,5 @@ int main(void)
   FreeBCS(sys2);
   FreePK(&mykey);
   return 0;
-
 }
-
-
-
 
