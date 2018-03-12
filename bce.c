@@ -30,7 +30,7 @@ void FreeBCS(broadcast_system_t bcs)
     return;
   }
   element_clear(bcs->encr_prod);
-  element_clear(bcs->pub_key);  
+  element_clear(bcs->pub_key);
   element_clear(bcs->priv_key);
   return;
 }
@@ -53,7 +53,7 @@ void FreeGBP(global_broadcast_params_t gbp)
   }
   pbc_free(gbp->gs);
   pbc_free(gbp->hs);
-  
+
   return;
 }
 
@@ -71,7 +71,7 @@ void FreePK(priv_key_t key)
 }
 
 
-static inline void out(element_t elem, FILE *myfile) 
+static inline void out(element_t elem, FILE *myfile)
 {
   int sz = element_length_in_bytes(elem);
   fwrite(&sz, 4, 1, myfile);
@@ -109,7 +109,7 @@ void StorePrivKey(char *keyFileName, priv_key_t mykey)
   //store key index
   fwrite(&(mykey->index),4,1, keyf);
   //if(DEBUG) printf("done storing key index\n");
-  
+
   //store g_i_gamma
   out(mykey->g_i_gamma, keyf);
   //if(DEBUG) printf("done storing g_i_gamma\n");
@@ -131,13 +131,13 @@ void StorePrivKey(char *keyFileName, priv_key_t mykey)
 }
 
 
-void LoadPrivKey(char *keyFileName, priv_key_t *mykey, 
+void LoadPrivKey(char *keyFileName, priv_key_t *mykey,
 		 global_broadcast_params_t gbp)
 {
   if(!gbp) {
     printf("ACK!  You gave me no broadcast params!  I die.\n");
     return;
-  }  
+  }
   if(!mykey) {
     printf("ACK!  You gave me no key!  I die.\n");
     return;
@@ -151,13 +151,13 @@ void LoadPrivKey(char *keyFileName, priv_key_t *mykey,
     printf("ACK! couldn't write to file system.  I die\n");
     return;
   }
-  
+
   priv_key_t key = (priv_key_t) pbc_malloc(sizeof(struct single_priv_key_s));
-  
+
   //restore key index
   fread(&(key->index),4,1, keyf);
   //if(DEBUG) printf("done restoring key index\n");
-  
+
   //restore g_i_gamma
   element_init(key->g_i_gamma, gbp->pairing->G1);
   in(key->g_i_gamma, keyf);
@@ -186,7 +186,7 @@ void LoadPrivKey(char *keyFileName, priv_key_t *mykey,
 
 
 
-void StoreParams(char *systemFileName, 
+void StoreParams(char *systemFileName,
 		 global_broadcast_params_t gbp,
 		 broadcast_system_t sys)
 {
@@ -226,7 +226,7 @@ void StoreParams(char *systemFileName,
   out(sys->pub_key, sysp);
   //if(DEBUG) printf("done storing pub_key\n");
 
-  //store g 
+  //store g
   out(gbp->g, sysp);
   //if(DEBUG) printf("done storing g\n");
 
@@ -235,7 +235,7 @@ void StoreParams(char *systemFileName,
   for(i = 0; i < 2*gbp->num_users; i++) {
     if(i == gbp->num_users) continue;
     out(gbp->gs[i], sysp);
-    //if(DEBUG) printf("done storing g %d\n",i);    
+    //if(DEBUG) printf("done storing g %d\n",i);
   }
   //if(DEBUG) printf("done storing gs\n");
 
@@ -295,13 +295,13 @@ void LoadParams(char *systemFileName,
   FILE *params = fopen(p->pairFileName, "r");
   if(!params) {
     printf("ACK! couldn't open %s  I die\n", p->pairFileName);
-    return;    
+    return;
   }
   pairing_init_inp_str(p->pairing, params);
   fclose(params);
 
   //restore num_users
-  fread(&(p->num_users),4,1, sysp); 
+  fread(&(p->num_users),4,1, sysp);
 
   //restore encr_prod
   element_init(s->encr_prod, p->pairing->G1);
@@ -313,7 +313,7 @@ void LoadParams(char *systemFileName,
   in(s->pub_key, sysp);
   //element_out_str(stdout, 0, s->pub_key);
 
-  //restore g 
+  //restore g
   element_init(p->g, p->pairing->G1);
   in(p->g, sysp);
 
@@ -328,23 +328,23 @@ void LoadParams(char *systemFileName,
     element_init(p->gs[i], p->pairing->G1);
     in(p->gs[i], sysp);
   }
-  
+
   //restore h
   element_init_G2(p->h, p->pairing);
   in(p->h, sysp);
-  
+
   //restore hs
   for(i = 0; i < 2*p->num_users; i++) {
     if(i == p->num_users) continue;
     element_init_G2(p->hs[i], p->pairing);
     in(p->hs[i], sysp);
   }
-    
+
   fclose(sysp);
 
   //now insert a dummy private key
   element_init_Zr(s->priv_key, p->pairing);
-  
+
   *gbp = p;
   *sys = s;
 
@@ -353,7 +353,7 @@ void LoadParams(char *systemFileName,
 
 }
 
-void DecryptKEM_using_product(global_broadcast_params_t gbp, 
+void DecryptKEM_using_product(global_broadcast_params_t gbp,
 			      priv_key_t mykey, element_t key,
 			      ct_t myct)
 {
@@ -378,17 +378,17 @@ void DecryptKEM_using_product(global_broadcast_params_t gbp,
      printf("calling this function! I die.\n");
      return;
   }
-  
+
   element_t temp;
   element_t temp2;
   element_t di_de;
   element_t temp3;
-  
+
   element_init(temp, gbp->pairing->GT);
   element_init(temp2, gbp->pairing->GT);
   element_init(di_de, gbp->pairing->G1);
   element_init(temp3, gbp->pairing->GT);
- 
+
   //Generate the numerator
   pairing_apply(temp, myct->C1, mykey->h_i, gbp->pairing);
   //G1 element in denom
@@ -398,14 +398,14 @@ void DecryptKEM_using_product(global_broadcast_params_t gbp,
   //Invert the denominator
   element_invert(temp3, temp2);
 
-  
+
   element_init(key, gbp->pairing->GT);
   //multiply the numerator by the inverted denominator
   element_mul(key, temp, temp3);
-  
+
 }
 
-void Decrypt_BC_KEM_using_bitvect(global_broadcast_params_t gbp, 
+void Decrypt_BC_KEM_using_bitvect(global_broadcast_params_t gbp,
 				  priv_key_t mykey, element_t key,
 				  ct_t myct, char *recip)
 {
@@ -418,23 +418,23 @@ void Decrypt_BC_KEM_using_bitvect(global_broadcast_params_t gbp,
 }
 
 
-void Decrypt_BC_KEM_using_indicies(global_broadcast_params_t gbp, 
+void Decrypt_BC_KEM_using_indicies(global_broadcast_params_t gbp,
 				   priv_key_t mykey, element_t key,
 				   ct_t myct, int *in_recip, int num_recip)
 {
   if(!mykey) {
     printf("\nyou didn't give me a valid key.  I die\n");
     return;
-  } 
+  }
   Gen_decr_prod_from_indicies(gbp, mykey->index,in_recip, num_recip, mykey);
-  DecryptKEM_using_product(gbp, mykey, key, myct);  
+  DecryptKEM_using_product(gbp, mykey, key, myct);
 }
 
-			      
+
 
 
 void BroadcastKEM_using_bitvec(global_broadcast_params_t gbp,
-			       broadcast_system_t sys, 
+			       broadcast_system_t sys,
 			       char *recip, ct_t myct, element_t key)
 {
 
@@ -463,7 +463,7 @@ void BroadcastKEM_using_indicies(global_broadcast_params_t gbp,
 
 
 
-void BroadcastKEM_using_product(global_broadcast_params_t gbp, 
+void BroadcastKEM_using_product(global_broadcast_params_t gbp,
 				broadcast_system_t sys,
 				ct_t myct, element_t key)
 {
@@ -484,11 +484,11 @@ void BroadcastKEM_using_product(global_broadcast_params_t gbp,
   element_t t;
   element_init_Zr(t, gbp->pairing);
   element_random(t);
-  
+
   element_init(key, gbp->pairing->GT);
   element_init(myct->C0, gbp->pairing->G2);
   element_init(myct->C1, gbp->pairing->G1);
-  
+
   //COMPUTE K
   pairing_apply(key, gbp->gs[gbp->num_users-1], gbp->hs[0], gbp->pairing);
   element_pow_zn(key, key, t);
@@ -510,15 +510,15 @@ void BroadcastKEM_using_product(global_broadcast_params_t gbp,
     printf("\nencr_prod = ");
     element_out_str(stdout, 0, sys->encr_prod);
     printf("\nhdr_c1 = ");
-    element_out_str(stdout, 0, myct->C1);    
+    element_out_str(stdout, 0, myct->C1);
     printf("\n");
   }
   element_pow_zn(myct->C1, myct->C1, t);
     element_clear(t);
 }
 
-void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver, 
-			       int *adds, int N_adds, int *rems, int N_rems, 
+void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver,
+			       int *adds, int N_adds, int *rems, int N_rems,
 			       priv_key_t mykey)
 {
   // REMOVES THE OLD ONES, THEN ADDS THE NEW ONES
@@ -537,7 +537,7 @@ void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver,
   element_init(temp_inv, gbp->pairing->G1);
   if(rems) {
     for(i = 0; i < N_rems; i++) {
-      //removing elements from the set after 
+      //removing elements from the set after
       //checking if it's in the bit-vector
       incl_num = rems[i];
       if(incl_num < 1 || incl_num > gbp->num_users) {
@@ -551,7 +551,7 @@ void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver,
       }
       element_invert(temp_inv, gbp->gs[(n-incl_num)+receiver]);
       element_mul(mykey->decr_prod, mykey->decr_prod, temp_inv);
-    } 
+    }
   }
   if(adds) {
     for(i = 0; i < N_adds; i++) {
@@ -566,16 +566,16 @@ void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver,
 	if(DEBUG) printf("incl_num == receiver, continuing\n");
 	continue;
       }
-      element_mul(mykey->decr_prod, mykey->decr_prod, 
+      element_mul(mykey->decr_prod, mykey->decr_prod,
 		  gbp->gs[(n-incl_num)+receiver]);
-    }  
+    }
   }
 }
 
 
 
 void Gen_decr_prod_from_indicies(global_broadcast_params_t gbp, int receiver,
-				 int *in_recip, int num_recip, 
+				 int *in_recip, int num_recip,
 				 priv_key_t mykey)
 {
   if(!gbp) {
@@ -615,18 +615,18 @@ void Gen_decr_prod_from_indicies(global_broadcast_params_t gbp, int receiver,
       element_set(mykey->decr_prod, gbp->gs[(n-incl_num)+receiver]);
       already_set = 1;
     } else {
-      element_mul(mykey->decr_prod, mykey->decr_prod, 
+      element_mul(mykey->decr_prod, mykey->decr_prod,
 		  gbp->gs[(n-incl_num)+receiver]);
     }
   }
-  
+
 }
 
 
-void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp, 
+void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
 			       int receiver, char *recip, priv_key_t mykey)
 {
-  
+
   // recip must have length num_users/8;
   // BITVector[0    ]lsb corresponds to Recipient 1, and
   // BITVector[n/8-1]msb corresponds to Recipient n
@@ -635,7 +635,7 @@ void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
   int i,j;
   int already_set = 0;
 
-  
+
   if(!gbp) {
     printf("ACK!  You gave me no broadcast params!  I die.\n");
     return;
@@ -650,7 +650,7 @@ void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
   element_init(mykey->decr_prod, gbp->pairing->G1);
   int n = gbp->num_users;
   int length = n / 8;
-  
+
   for(i = 0; i < length; i++) {
     working = recip[i];
     for(j = 0; j < 8; j++) {
@@ -664,10 +664,10 @@ void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
 	  element_set(mykey->decr_prod, gbp->gs[(n-main_index)+receiver]);
 	  already_set = 1;
 	} else {
-	  element_mul(mykey->decr_prod, mykey->decr_prod, 
+	  element_mul(mykey->decr_prod, mykey->decr_prod,
 		      gbp->gs[(n-main_index)+receiver]);
 	}
-	if(0 && DEBUG) 
+	if(0 && DEBUG)
 	  printf("added index = %d\n", main_index);
       }
       main_index++;
@@ -677,9 +677,9 @@ void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
 }
 
 
-  
-void Change_encr_prod_indicies(global_broadcast_params_t gbp, 
-			       broadcast_system_t sys, int *adds, 
+
+void Change_encr_prod_indicies(global_broadcast_params_t gbp,
+			       broadcast_system_t sys, int *adds,
 			       int N_adds, int *rems, int N_rems)
 {
   // REMOVES THE OLD ONES, THEN ADDS THE NEW ONES
@@ -707,7 +707,7 @@ void Change_encr_prod_indicies(global_broadcast_params_t gbp,
       }
       element_invert(temp_inv, gbp->gs[n-incl_num]);
       element_mul(sys->encr_prod, sys->encr_prod, temp_inv);
-    } 
+    }
   }
   if(adds) {
     for(i = 0; i < N_adds; i++) {
@@ -718,12 +718,12 @@ void Change_encr_prod_indicies(global_broadcast_params_t gbp,
 	printf("only give me valid values.  i die.\n");
 	return;
       }
-      element_mul(sys->encr_prod, sys->encr_prod, gbp->gs[n-incl_num]);      
-    }  
+      element_mul(sys->encr_prod, sys->encr_prod, gbp->gs[n-incl_num]);
+    }
   }
 }
 
-void PrintBitString(char *bs, int length) 
+void PrintBitString(char *bs, int length)
 {
   if(!bs) {
     printf("the bitstring you provided was null.\n");
@@ -747,7 +747,7 @@ void PrintBitString(char *bs, int length)
 }
 
 
-void Gen_encr_prod_from_indicies(global_broadcast_params_t gbp, 
+void Gen_encr_prod_from_indicies(global_broadcast_params_t gbp,
 				 broadcast_system_t sys,
 				 int *in_recip, int num_recip)
 {
@@ -790,7 +790,7 @@ void Gen_encr_prod_from_indicies(global_broadcast_params_t gbp,
 }
 
 
-void Gen_encr_prod_from_bitvec(global_broadcast_params_t gbp, 
+void Gen_encr_prod_from_bitvec(global_broadcast_params_t gbp,
 			       broadcast_system_t sys, char *recip)
 {
   // recip must have length num_users/8;
@@ -854,7 +854,7 @@ void Get_priv_key(global_broadcast_params_t gbp, broadcast_system_t sys,
   if(i < 1 || i > gbp->num_users) {
     printf("ACK!  You gave me an index that's out of bounds!  I die.\n");
     printf("You must you standard notation [1...n]\n");
-    return;    
+    return;
   }
   element_init(mykey->g_i_gamma, gbp->pairing->G1);
   element_init(mykey->g_i, gbp->pairing->G1);
@@ -878,23 +878,23 @@ void Gen_broadcast_system(global_broadcast_params_t gbp,
   my_sys = pbc_malloc(sizeof(struct broadcast_system_s));
 
   element_init_Zr(my_sys->priv_key, gbp->pairing);
-  
+
   element_random(my_sys->priv_key);
-  
+
   element_init(my_sys->pub_key, gbp->pairing->G1);
-  element_pow_zn(my_sys->pub_key, gbp->g, my_sys->priv_key); 
+  element_pow_zn(my_sys->pub_key, gbp->g, my_sys->priv_key);
 
   *sys = my_sys;
 }
 
 
-void Setup_global_broadcast_params(global_broadcast_params_t *sys, 
+void Setup_global_broadcast_params(global_broadcast_params_t *sys,
 				   int num_users, char *pairFileName)
 {
   global_broadcast_params_t gbs;
 
   gbs = pbc_malloc(sizeof(struct global_broadcast_params_s));
-  
+
   // Setup curve in gbp
 
   FILE *curveFile = fopen(pairFileName, "r");
@@ -903,7 +903,7 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
     printf("%s doesn't exist!  exiting! \n\n", pairFileName);
     return;
   }
-  
+
   pairing_init_inp_str(gbs->pairing, curveFile);
   fclose(curveFile);
 
@@ -941,10 +941,10 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
   element_pow_zn(lhs[0],gbs->h, alpha);
 
   //Fill in the gs and the hs arrays
-  for(i = 1; i < 2*num_users; i++) { 
+  for(i = 1; i < 2*num_users; i++) {
     //raise alpha to one more power
     if(DEBUG) {
-      if(!(i % 5)) 
+      if(!(i % 5))
 	printf("Finished computing elem %d\n",i);
     }
 
@@ -956,13 +956,13 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
       element_clear(lgs[i-1]);
       element_clear(lhs[i-1]);
     }
-	   
+
   }
-  
+
   //For simplicity & so code was easy to read
   gbs->gs = lgs;
   gbs->hs = lhs;
-  
+
   *sys = gbs;
   element_clear(alpha);
 }

@@ -13,16 +13,16 @@
 int main(void)
 {
   int i;
-  
+
   global_broadcast_params_t gbs;
 
   //Global Setup
   Setup_global_broadcast_params(&gbs, N, "d201.param");
-  
+
   if(1 && DEBUG) {
-    printf("\ng = ");  
+    printf("\ng = ");
     element_out_str(stdout, 0, gbs->g);
-    printf("\nh = ");  
+    printf("\nh = ");
     element_out_str(stdout, 0, gbs->h);
     for(i = 0; i < 1; i++) {
       printf("\nThe next element is %d------------------------------------",i);
@@ -33,21 +33,21 @@ int main(void)
     }
     printf("\n");
   }
-  
+
   //Broadcast System Setup
   broadcast_system_t sys;
   Gen_broadcast_system(gbs, &sys);
-  
+
   struct single_priv_key_s mykey;
   struct single_priv_key_s mykey2;
   struct single_priv_key_s mykey3;
-  
+
   Get_priv_key(gbs, sys, 2, &mykey);
   //if(DEBUG) printf("done 1\n");
   //if(DEBUG) printf("done 2\n");
   Get_priv_key(gbs, sys, 2, &mykey3);
   //if(DEBUG) printf("done 3\n");
-  
+
   if(DEBUG && 0) {
     printf("\ng_i = ");
     element_out_str(stdout, 0, mykey.g_i);
@@ -121,7 +121,7 @@ int main(void)
     printf("\nnew = ");
     element_out_str(stdout, 0, gbp2->hs[31]);
     printf("\n old n_u = %d", gbs->num_users);
-    printf("\n new n_u = %d", gbp2->num_users); 
+    printf("\n new n_u = %d", gbp2->num_users);
     printf("\nolde = ");
     element_out_str(stdout, 0, sys->encr_prod);
     printf("\nnew = ");
@@ -132,7 +132,7 @@ int main(void)
     element_out_str(stdout, 0, sys2->pub_key);
   }
 
-  
+
   //int in_recip[5] = {4, 5, 6, 7, 8 };
   //int num_recip = 5;
   //int rems[3] = { 5, 6, 7 };
@@ -158,33 +158,33 @@ int main(void)
     element_out_str(stdout, 0, sys2->encr_prod);
     printf("\n");
   }
-    
+
 
   if(DEBUG) {
     PrintBitString(sys->recipients,BSL);
     printf("\nsys1 encr_product = ");
     element_out_str(stdout, 0, sys->encr_prod);
-  }  
+  }
   */
-  
+
   Gen_decr_prod_from_bitvec(gbs, 2, recip, &mykey);
   //if(DEBUG && 0) printf("\ndone 1 decr\n");
   Gen_decr_prod_from_bitvec(gbs, 2, recip, &mykey2);
   //if(DEBUG && 0) printf("\ndone 2 decr\n");
   Gen_decr_prod_from_bitvec(gbs, 2, recip, &mykey3);
   //if(DEBUG && 0) printf("\ndone 3 decr\n");
-  //Gen_decr_prod_from_indicies(gbs, 2, in_recip, num_recip, &mykey2);  
+  //Gen_decr_prod_from_indicies(gbs, 2, in_recip, num_recip, &mykey2);
   //Change_decr_prod_indicies(gbs, 2, adds, N_adds, rems, N_rems, &mykey2);
 
   //Gen_decr_prod_from_bitvec(gbs, 2, recip, &mykey3);
- 
+
 
   if(0 && DEBUG) {
     printf("\n");
     printf("mykey1 decr_product = ");
     element_out_str(stdout, 0, mykey.decr_prod);
     printf("\n");
-  }  
+  }
   if(DEBUG && 0) {
     printf("\n");
     printf("mykey2 decr_product = ");
@@ -197,7 +197,7 @@ int main(void)
     element_out_str(stdout, 0, mykey3.decr_prod);
     printf("\n");
   }
- 
+
 
 
 
@@ -206,7 +206,7 @@ int main(void)
 
   StorePrivKey("key2.stor", &mykey);
   LoadPrivKey("key2.stor", &load_key, gbs);
-  
+
   if(DEBUG) {
     printf("\nold = ");
     element_out_str(stdout, 0, mykey.g_i_gamma);
@@ -225,14 +225,14 @@ int main(void)
     printf("\nnew = ");
     element_out_str(stdout, 0, load_key->decr_prod);
     printf("\n index = %d", mykey.index);
-    printf("\n index = %d", load_key->index); 
+    printf("\n index = %d", load_key->index);
   }
 
   ct_t myCT = (ct_t) pbc_malloc(sizeof(struct ciphertext_s));
   ct_t myCT2 = (ct_t) pbc_malloc(sizeof(struct ciphertext_s));
   ct_t myCT3 = (ct_t) pbc_malloc(sizeof(struct ciphertext_s));
   //int recip2[14] = { 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16 };
-  //int n_recip2 = 14; 
+  //int n_recip2 = 14;
   element_t key1;
   element_t key2;
   element_t key3;
@@ -251,7 +251,7 @@ int main(void)
   //BroadcastKEM_using_bitvec(gbs, sys, recip, myCT2, key2);
   //BroadcastKEM_using_indicies(gbs, sys, myCT3, recip2, n_recip2, key3);
 
-  
+
   if(DEBUG) {
     //COMPARE ALL THREE CTs!
     printf("\n1-C0 = ");
@@ -267,8 +267,8 @@ int main(void)
     printf("\n3-C1 = ");
     element_out_str(stdout, 0, myCT3->C1);
   }
-  
-  
+
+
   printf("\nkey1 = ");
   element_out_str(stdout, 0, key1);
   printf("\n");
@@ -281,7 +281,7 @@ int main(void)
 
   //PrintBitString(mykey.recipients, BSL);
   //DecryptKEM_using_product(gbs, &mykey2, key5, myCT2);
-  
+
 
   //printf("\nmyprivkey = ");
   //element_out_str(stdout, 0, mykey.g_i_gamma);
