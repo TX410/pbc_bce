@@ -14,5 +14,5 @@ def configure(conf):
 def build(bld):
   bld.read_shlib('pbc', paths=['/usr/local/lib'])
   bld.read_shlib('gmp', paths=['/usr/lib/x86_64-linux-gnu'])
-  bld.program(source='./testbce.c ./bce.c', target='test', use='pbc gmp', includes="./")
+  bld.program(source='testbce.c src/bce.c', target='test', use='pbc gmp', includes="src")
 
