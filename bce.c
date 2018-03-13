@@ -507,13 +507,13 @@ void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver,
       //checking if it's in the bit-vector
       incl_num = rems[i];
       if(incl_num < 1 || incl_num > gbp->num_users) {
-  printf("element %d was outside the range of valid users\n",i);
-  printf("only give me valid values.  i die.\n");
-  return;
+        printf("element %d was outside the range of valid users\n",i);
+        printf("only give me valid values.  i die.\n");
+        return;
       }
       if(incl_num == receiver) {
-  if(DEBUG) printf("incl_num == receiver, continuing\n");
-  continue;
+        if(DEBUG) printf("incl_num == receiver, continuing\n");
+        continue;
       }
       element_invert(temp_inv, gbp->gs[(n-incl_num)+receiver]);
       element_mul(mykey->decr_prod, mykey->decr_prod, temp_inv);
@@ -524,13 +524,13 @@ void Change_decr_prod_indicies(global_broadcast_params_t gbp, int receiver,
       //adding elements to the set after checking if they're already there
       incl_num = adds[i];
       if(incl_num < 1 || incl_num > gbp->num_users) {
-  printf("element %d was outside the range of valid users\n",i);
-  printf("only give me valid values.  i die.\n");
-  return;
+        printf("element %d was outside the range of valid users\n",i);
+        printf("only give me valid values.  i die.\n");
+        return;
       }
       if(incl_num == receiver) {
-  if(DEBUG) printf("incl_num == receiver, continuing\n");
-  continue;
+        if(DEBUG) printf("incl_num == receiver, continuing\n");
+        continue;
       }
       element_mul(mykey->decr_prod, mykey->decr_prod,
       gbp->gs[(n-incl_num)+receiver]);
@@ -614,20 +614,20 @@ void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
     working = recip[i];
     for(j = 0; j < 8; j++) {
       if(main_index == receiver) {
-  main_index++;
-  working = working>>1;
-  continue;
+        main_index++;
+        working = working>>1;
+        continue;
       }
       if(working & 1) {
-  if(!already_set) {
-    element_set(mykey->decr_prod, gbp->gs[(n-main_index)+receiver]);
-    already_set = 1;
-  } else {
-    element_mul(mykey->decr_prod, mykey->decr_prod,
+        if(!already_set) {
+          element_set(mykey->decr_prod, gbp->gs[(n-main_index)+receiver]);
+          already_set = 1;
+        } else {
+          element_mul(mykey->decr_prod, mykey->decr_prod,
           gbp->gs[(n-main_index)+receiver]);
-  }
-  if(0 && DEBUG)
-    printf("added index = %d\n", main_index);
+        }
+        if(0 && DEBUG)
+          printf("added index = %d\n", main_index);
       }
       main_index++;
       working = working>>1;
@@ -657,9 +657,9 @@ void Change_encr_prod_indicies(global_broadcast_params_t gbp,
       //removing elements from the set after checking if it's in the bit-vector
       incl_num = rems[i];
       if(incl_num < 1 || incl_num > gbp->num_users) {
-  printf("element %d was outside the range of valid users\n",i);
-  printf("only give me valid values.  i die.\n");
-  return;
+        printf("element %d was outside the range of valid users\n",i);
+        printf("only give me valid values.  i die.\n");
+        return;
       }
       element_invert(temp_inv, gbp->gs[n-incl_num]);
       element_mul(sys->encr_prod, sys->encr_prod, temp_inv);
@@ -670,9 +670,9 @@ void Change_encr_prod_indicies(global_broadcast_params_t gbp,
       //adding elements to the set after checking if they're already there
       incl_num = adds[i];
       if(incl_num < 1 || incl_num > gbp->num_users) {
-  printf("element %d was outside the range of valid users\n",i);
-  printf("only give me valid values.  i die.\n");
-  return;
+        printf("element %d was outside the range of valid users\n",i);
+        printf("only give me valid values.  i die.\n");
+        return;
       }
       element_mul(sys->encr_prod, sys->encr_prod, gbp->gs[n-incl_num]);
     }
@@ -691,9 +691,9 @@ void PrintBitString(char *bs, int length) {
     working = bs[i];
     for(j = 0; j < 8; j++) {
       if(working & 1) {
-  printf("1");
+        printf("1");
       } else {
-  printf("0");
+        printf("0");
       }
       working = working >> 1;
     }
@@ -773,12 +773,12 @@ void Gen_encr_prod_from_bitvec(global_broadcast_params_t gbp,
     working = recip[i];
     for(j = 0; j < 8; j++) {
       if(working & 1) {
-  if(!already_set) {
-    element_set(sys->encr_prod, gbp->gs[n-main_index]);
-    already_set = 1;
-  } else {
-    element_mul(sys->encr_prod, sys->encr_prod, gbp->gs[n-main_index]);
-  }
+        if(!already_set) {
+          element_set(sys->encr_prod, gbp->gs[n-main_index]);
+          already_set = 1;
+        } else {
+          element_mul(sys->encr_prod, sys->encr_prod, gbp->gs[n-main_index]);
+        }
       }
       main_index++;
       working = working>>1;
@@ -889,7 +889,7 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
     //raise alpha to one more power
     if(DEBUG) {
       if(!(i % 5))
-  printf("Finished computing elem %d\n",i);
+        printf("Finished computing elem %d\n",i);
     }
 
     element_init(lgs[i], gbs->pairing->G1);
@@ -900,7 +900,6 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
       element_clear(lgs[i-1]);
       element_clear(lhs[i-1]);
     }
-
   }
 
   //For simplicity & so code was easy to read

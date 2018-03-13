@@ -7,7 +7,7 @@
 */
 
 #include <string.h>
-#include "pbc.h"
+#include <pbc/pbc.h>
 
 
 /* **********************************************************
@@ -183,8 +183,8 @@ void Change_encr_prod_indicies(global_broadcast_params_t gbp,
    included.
 ********************************************************** */
 void Gen_decr_prod_from_bitvec(global_broadcast_params_t gbp,
-             int receiver,
-             char *recip, priv_key_t mykey);
+                               int receiver,
+                               char *recip, priv_key_t mykey);
 
 
 /* **********************************************************
