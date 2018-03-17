@@ -286,6 +286,9 @@ void Decrypt_BC_KEM_using_indicies(global_broadcast_params_t gbp,
                                    ct_t myct, int *in_recip,
                                    int num_recip);
 
+void StoreHdr(char *filename, global_broadcast_params_t gbp,
+              ct_t myct);
+
 
 void pairing_init_inp_str(pairing_t pairing, FILE *stream);
 

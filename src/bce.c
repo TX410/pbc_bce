@@ -910,6 +910,46 @@ void Setup_global_broadcast_params(global_broadcast_params_t *sys,
   element_clear(alpha);
 }
 
+void StoreHdr(char *filename, global_broadcast_params_t gbp,
+              ct_t myct) {
+
+  FILE *file = fopen(filename, "w");
+
+  // store gbp
+  int leng = strlen(gbp->pairFileName) + 1;
+  fwrite(&leng, 4, 1, file);
+  fwrite(gbp->pairFileName, 1, leng, file);
+
+  fwrite(&(gbp->num_users), 4, 1, file);
+
+  out(gbp->g, file);
+
+  int i;
+
+  for(i = 0; i < 2*gbp->num_users; i++) {
+    if(i == gbp->num_users)
+      continue;
+    out(gbp->gs[i], file);
+  }
+
+  out(gbp->h, file);
+
+  for(i = 0; i < 2 * gbp->num_users; i++) {
+    if(i==gbp->num_users)
+      continue;
+    out(gbp->hs[i], file);
+  }
+
+
+  // store myct
+  out(myct->C0, file);
+  out(myct->C1, file);
+
+  fclose(file);
+
+  return;
+}
+
 void pairing_init_inp_str(pairing_t pairing, FILE *stream) {
   char s_temp[2048];
   size_t count = fread(s_temp, 1, 2048, stream);
